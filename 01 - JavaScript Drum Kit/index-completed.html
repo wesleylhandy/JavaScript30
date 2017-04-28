@@ -58,24 +58,38 @@
   <audio data-key="76" src="sounds/tink.wav"></audio>
 
 <script>
-  function removeTransition(e) {
-    if (e.propertyName !== 'transform') return;
-    e.target.classList.remove('playing');
-  }
+
+  //event listener for keydown event
+  window.addEventListener('keydown', playSound);
+    
 
   function playSound(e) {
+     //get audio element
     const audio = document.querySelector(`audio[data-key="${e.keyCode}"]`);
-    const key = document.querySelector(`div[data-key="${e.keyCode}"]`);
-    if (!audio) return;
+    //get specific key element
+    const key = document.querySelector(`.key[data-key="${e.keyCode}"]`);
 
-    key.classList.add('playing');
-    audio.currentTime = 0;
+    if(!audio) return; //exit function if audio is null -- key will also be null
+    
+    audio.currentTime = 0; //rewinds sound to start
     audio.play();
+    
+    key.classList.add('playing'); //update css via playing class
+  
   }
 
-  const keys = Array.from(document.querySelectorAll('.key'));
-  keys.forEach(key => key.addEventListener('transitionend', removeTransition));
-  window.addEventListener('keydown', playSound);
+  function removeTransition(e) {
+    if(e.propertyName !== 'transform') return; // stop if not a css transformation
+    
+    this.classList.remove('playing'); //return css to normal by removing class
+  }
+
+  const keys = document.querySelectorAll('.key'); //get array of all .key elements
+
+  //add event listener for transitioned elements, meaning a css transition has completed
+  keys.forEach(key=> key.addEventListener('transitionend', removeTransition));
+
+
 </script>
 
 
