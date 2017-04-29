@@ -9,6 +9,10 @@
 
     <div class="clock">
       <div class="clock-face">
+        <div class='clock-markers'></div>
+        <div class='center-knob'>
+          <div class = 'center-point'></div>
+        </div>
         <div class="hand hour-hand"></div>
         <div class="hand min-hand"></div>
         <div class="hand second-hand"></div>
@@ -56,18 +60,115 @@
       transform: translateY(-3px); /* account for the height of the clock hands */
     }
 
+    .center-knob {
+      position: absolute;
+      border: 12px solid white;
+      border-radius: 50%;
+      top: calc(50% - 9px);
+      left: calc(50% - 12px);
+      z-index: 3;
+    }
+
+    .center-point {
+      position: absolute;;
+      border: 3px solid black;
+      border-radius: 50%;
+      top: calc(50% - 3px);
+      left: calc(50% - 3px);
+      z-index: 4;
+    }
+
     .hand {
       width:50%;
       height:6px;
       background:black;
       position: absolute;
       top:50%;
+      transform-origin: 100%;
+      transform: rotate(90deg);
+      transition-timing-function: cubic-bezier(0.1, 2, 7, 0.58, 1);
+      transition: all 0.05s;
+    }
+
+    .handle-zero {
+      transition: all 0s;
+    }
+
+    .second-hand {
+      height: 4px;
+      background: white;
+    }
+
+    .min-hand {
+      height: 12px;
+      margin-left: 5%;
+      width: 45%;
+    }
+
+    .hour-hand {
+      height: 12px;
+      margin-left: 12.5%;
+      width: 37.5%;
+
     }
 
   </style>
 
   <script>
 
+  const secondHand = document.querySelector('.second-hand');
+  const minuteHand = document.querySelector('.min-hand');
+  const hourHand = document.querySelector('.hour-hand');
+
+  function setTime() {
+
+    //get current JS dateTime
+    const now = new Date();
+
+    //get current seconds and initialize secondsDegrees
+    const seconds = now.getSeconds();
+    
+    //handle the animation transition bug at zero seconds
+    if (seconds) secondHand.classList.remove('handle-zero');
+    else secondHand.classList.add('handle-zero');
+
+    const secondsDegrees = ((seconds / 60) * 360) + 90;
+
+    //set the rotation of the seconds hand based on degrees setting
+    secondHand.style.transform = `rotate(${secondsDegrees}deg)`;
+
+    //repeat for Minutes
+
+    const minutes = now.getMinutes();
+    if (minutes) minuteHand.classList.remove('handle-zero');
+    else minuteHand.classList.add('handle-zero');
+
+    //accounts for the change in minutes plus the change in seconds
+    //1 minute will equal a 6 degrees of change; 
+    //1 second will equal 0.1 degree change
+    const minutesDegrees = ((minutes / 60) *360) + 90 + ((seconds/60)*6);
+    minuteHand.style.transform = `rotate(${minutesDegrees}deg)`;
+
+    //repeat for Hours
+
+    //hours must be converted from 24 hour time to 12 hour time
+    const hours = now.getHours() > 12 ? now.getHours() - 12 : now.getHours();
+    if (hours) hourHand.classList.remove('handle-zero');
+    else hourHand.classList.add('handle-zero');
+
+    //1 hour = 30 degrees of change
+    //1 minutes = 0.5 degrees of change
+    //1 second = 0.008333 degrees of change
+    const hoursDegrees = ((hours / 12) * 360) + 90 + ((minutes/60)*30) + ((seconds/60)/2);
+    hourHand.style.transform = `rotate(${hoursDegrees}deg)`;
+
+  }
+
+  //infinite interval, clock will run until browser closed
+  let clock = setInterval(setTime, 1000);
+
+  //call initially
+  setTime();
 
   </script>
 </body>
