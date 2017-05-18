@@ -103,17 +103,33 @@
   const checkedBoxes = [];
   
   const checkboxes = document.querySelectorAll('input');
-  checkboxes.forEach((checkbox, index)=> checkbox.addEventListener('click', e=>selectBoxes(e, index)));
+  checkboxes.forEach((checkbox, index)=> checkbox.addEventListener('click', e => selectBoxes(e, checkbox, index)));
 
-  function selectBoxes(e, index){
-    checkedBoxes.push(index)
-    checkedBoxes.sort((a,b)=>a-b);
+  function selectBoxes(e, checkbox, index){
+    //push checked boxes to an array if not already checked, remove if box is being unchecked
+    if (checkbox.checked) {
+      checkedBoxes.push(index);
 
-    if(e.shiftKey) {
-      
-      for(let i=checkedBoxes[0]; i<checkedBoxes[checkedBoxes.length-1]; i++){
-        checkboxes[i].checked = true;
+      //the following only runs if user holds shift while checking a box and if more than one box has been checked
+      if(e.shiftKey && checkedBoxes.length > 1) {
+
+        //sort array in ascending order
+        checkedBoxes.sort((a,b)=>a-b);
+
+        //get max and min values, each value will represent the index in the nodelist for the first and last checked boxes
+        let min = checkedBoxes[0];
+        let max = checkedBoxes[checkedBoxes.length-1];
+        
+        //loop through node list for all values in between min and max and set to checked
+        for(let i = min + 1; i < max; i++) {
+          checkboxes[i].checked = true;
+          checkedBoxes.push(i);
+        }
       }
+
+    } else {
+      let removeIndex = checkedBoxes.findIndex(e=> e===index);
+      checkedBoxes.splice(removeIndex, 1);
     }
   }
 
