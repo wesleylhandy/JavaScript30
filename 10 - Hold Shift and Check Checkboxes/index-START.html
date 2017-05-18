@@ -99,6 +99,25 @@
   </div>
 
 <script>
-</script>
+
+  const checkedBoxes = [];
+  
+  const checkboxes = document.querySelectorAll('input');
+  checkboxes.forEach((checkbox, index)=> checkbox.addEventListener('click', e=>selectBoxes(e, index)));
+
+  function selectBoxes(e, index){
+    checkedBoxes.push(index)
+    checkedBoxes.sort((a,b)=>a-b);
+
+    if(e.shiftKey) {
+      
+      for(let i=checkedBoxes[0]; i<checkedBoxes[checkedBoxes.length-1]; i++){
+        checkboxes[i].checked = true;
+      }
+    }
+  }
+
+
+  </script>
 </body>
 </html>
