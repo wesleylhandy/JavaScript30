@@ -56,8 +56,27 @@
         timeout = setTimeout(later, wait);
         if (callNow) func.apply(context, args);
       };
+    } 
+
+    const sliderImages = document.querySelectorAll('.slide-in');
+
+    function checkSlide(e) {
+      sliderImages.forEach(sliderImage => {
+        //scrollY is how far scrolled from top. innerHeigh is window height. 
+        const slideInAt = (window.scrollY + window.innerHeight) - sliderImage.height / 2;
+        //offsetTop is scroll position of top of image, so add image height to get offset at bottom of image
+        const imageBottom = sliderImage.offsetTop + sliderImage.height;
+        const isHalfShown = slideInAt > sliderImage.offsetTop;
+        const isNotScrolledPast = window.scrollY < imageBottom;
+        if(isHalfShown && isNotScrolledPast) {
+          sliderImage.classList.add('active');
+        } else {
+          sliderImage.classList.remove('active');
+        }
+      })
     }
 
+    window.addEventListener('scroll', debounce(checkSlide));
   </script>
 
   <style>
