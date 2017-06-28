@@ -39,26 +39,19 @@
 
 <button></button>
 <script>
-  const divs = document.querySelectorAll('div');
-  const button = document.querySelector('button');
 
-  function logText(e) {
-    console.log(this.classList.value);
-    // e.stopPropagation(); // stop bubbling!
-    // console.log(this);
-  }
+const divs = document.querySelectorAll('div');
 
-  divs.forEach(div => div.addEventListener('click', logText, {
-    capture: false,
-    once: true
-  }));
+function logText(e) {
+  console.log(this.classList.value);
+  e.stopPropagation();
 
-  button.addEventListener('click', () => {
-    console.log('Click!!!');
-  }, {
-    once: true
-  });
+  //stop propagation prevents bubbling
+}
 
+divs.forEach(div => div.addEventListener('click', logText, {capture: false, once: true}));
+//capture: false is default, so the events are captured on the way down (i.e. child to parent); when true, on the way up (i.e. parent to child)
+//once: event listener fires only once and then is removed
 </script>
 </body>
 </html>
